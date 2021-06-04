@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flappy Bird1</title>
+        <style>
+            .ss{
+                height:50px;
+                width:180px;
+                background:cyan;
+                color:#ff9900;
+                position:absolute;
+                top:0;
+                bottom:0;
+                left:0;
+                right:0;
+                margin:auto;
+                padding:25px 80px;
+                border-radius:20px;
+                font-size:25px;
+                
+            }
+            .ss h2{
+                margin-top:1px;
+                margin-left:25px;
+                font-family:monospace;
+            }
+            .hide{
+                display:none;
+            }
+           
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" width="288" height="512"></canvas>
+       
+        <div class="ss"><h2>Start</h2></div>
+        <script>
+        var n;
+        var starts=document.querySelector(".ss");
+        var jump1=document.querySelector(".jump");
+            var cvs = document.getElementById("canvas");
+var ctx = cvs.getContext("2d"); 
+// load images 
+var bird = new Image();
+var bg = new Image();
+var fg = new Image();
+var pipeNorth = new Image();
+var pipeSouth = new Image();
+
+ bird.src = "https://i.ibb.co/sysThPc/bird.png";
+ bg.src = "https://i.ibb.co/wsLwHKV/bg.png";
+ fg.src = "https://i.ibb.co/jvQRhxV/fg.png";
+ pipeNorth.src = "https://i.ibb.co/pWyF98R/pipe-North.png";
+ pipeSouth.src = "https://i.ibb.co/w7WSMbT/pipe-South.png";
+  // some variables
+   var gap = 100;
+   var constant; 
+   var bX = 10;
+   var bY = 150;
+    var gravity = 1.5;
+     var score = 0; 
+     // audio files 
+     var fly = new Audio();
+     var scor = new Audio();
+      fly.src = "sounds/fly.mp3";
+      scor.src = "https://www.dropbox.com/s/ygabocxsiy2jpxn/score.mp3?dl=1";
+       // on click
+       document.addEventListener("click",moveUp); 
+       function moveUp(){
+        bY -= 30; 
+        } 
+        
+        // pipe coordinates
+         var pipe = []; pipe[0] = { x : cvs.width, y : 0}; 
+         // draw images
+      function move()  {
+          if(n==1){
+              draw();
+              requestAnimationFrame(move);
+          }
+      } 
+      
+      
+        function draw()   
+        {
+        ctx.drawImage(bg,0,0);
+for(var i = 0; i < pipe.length; i++)
+           {
+            constant = pipeNorth.height+gap;
+             ctx.drawImage(pipeNorth,pipe[i].x,pipe[i].y); ctx.drawImage(pipeSouth,pipe[i].x,pipe[i].y+constant);
+             pipe[i].x--; if( pipe[i].x == 125 ){
+              pipe.push({ x : cvs.width,
+               y : Math.floor(Math.random()*pipeNorth.height)-pipeNorth.height }); 
+               } 
+               
+     if( bX + bird.width >= pipe[i].x && bX <= pipe[i].x + pipeNorth.width && (bY <= pipe[i].y + pipeNorth.height || bY+bird.height >= pipe[i].y+constant) || bY + bird.height >= cvs.height - fg.height){ 
+          n=2;  
+         pipe[i].x=cvs.width*6000;
+         score=0;
+         starts.classList.remove("hide");
+             starts.innerHTML="Restart"+"<br>"+""; 
+             
+             
+ }            
+           
+          // detect collision 
+     
+               if(pipe[i].x == 5){ 
+               score++; 
+               scor.play(); } } 
+               ctx.drawImage(fg,0,cvs.height - fg.height); ctx.drawImage(bird,bX,bY); 
+               bY += gravity; ctx.fillStyle = "#000";
+                ctx.font = "20px Verdana"; ctx.fillText("Score : "+score,10,cvs.height-20); 
+               
+        }
+        
+         
+         
+          function start(){ 
+n=1;
+ starts.classList.add("hide");                
+ requestAnimationFrame(move);
+  
+  }
+       starts.addEventListener("click",start);             
+
+        </script>
+    </body>
+</html>
